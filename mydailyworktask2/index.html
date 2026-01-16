@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe AI Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Tic-Tac-Toe AI</h1>
+        </div>
+
+        <div class="game-info">
+            <div class="info-card">
+                <h3>You (X)</h3>
+                <p class="score" id="humanScore">0</p>
+            </div>
+            <div class="info-card">
+                <h3>Draws</h3>
+                <p class="score" id="drawScore">0</p>
+            </div>
+            <div class="info-card">
+                <h3>AI (O)</h3>
+                <p class="score" id="aiScore">0</p>
+            </div>
+        </div>
+
+        <div class="status-display">
+            <p id="status">Your Turn</p>
+            <p id="thinking" style="display: none;">🤖 AI is thinking...</p>
+        </div>
+
+        <div class="board-container">
+            <div class="board" id="board">
+                <button class="cell" data-index="0"></button>
+                <button class="cell" data-index="1"></button>
+                <button class="cell" data-index="2"></button>
+                <button class="cell" data-index="3"></button>
+                <button class="cell" data-index="4"></button>
+                <button class="cell" data-index="5"></button>
+                <button class="cell" data-index="6"></button>
+                <button class="cell" data-index="7"></button>
+                <button class="cell" data-index="8"></button>
+            </div>
+        </div>
+
+        <div class="ai-stats">
+            <p>Last AI Move Evaluation: <span id="nodesEvaluated">0</span> nodes</p>
+            <p>Difficulty: <span id="difficulty">Unbeatable</span></p>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-reset" id="resetBtn">New Game</button>
+            <button class="btn btn-info" id="infoBtn">How to Play</button>
+        </div>
+
+        <div class="modal" id="infoModal">
+            <div class="modal-content">
+                <span class="close" id="closeBtn">&times;</span>
+                <h2>How to Play</h2>
+                <div class="modal-body">
+                    <h3>Rules:</h3>
+                    <ul>
+                        <li>You play as <strong>X</strong>, the AI plays as <strong>O</strong></li>
+                        <li>Click any empty cell to place your mark</li>
+                        <li>Get three in a row (horizontal, vertical, or diagonal) to win</li>
+                        <li>The AI uses Minimax algorithm to play optimally</li>
+                    </ul>
+
+                    <h3>Algorithm:</h3>
+                    <ul>
+                        <li><strong>Minimax:</strong> Explores all possible game states recursively</li>
+                        <li><strong>Alpha-Beta Pruning:</strong> Optimizes by skipping branches that can't affect the result</li>
+                        <li><strong>Scoring:</strong> Wins (+10), Draws (0), Losses (-10)</li>
+                    </ul>
+
+                    <h3>Performance:</h3>
+                    <ul>
+                        <li>First move: ~8,000 nodes evaluated</li>
+                        <li>Mid-game: ~500 nodes evaluated</li>
+                        <li>End-game: ~4 nodes evaluated</li>
+                    </ul>
+
+                    <h3>Strategy:</h3>
+                    <ul>
+                        <li>The AI is <strong>unbeatable</strong> - you can only draw or lose</li>
+                        <li>Best case: You play perfectly and achieve a draw</li>
+                        <li>Try to block the AI's winning moves!</li>
+                    </ul>
+                </div>
+                <button class="btn" id="closeModalBtn">Close</button>
+            </div>
+        </div>
+
+        <footer>
+        </footer>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

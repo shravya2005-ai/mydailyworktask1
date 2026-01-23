@@ -1,0 +1,324 @@
+/* Additional custom styles for the web application */
+
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+
+.demo-section {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.upload-zone {
+    background: white;
+    border: 3px dashed #4facfe;
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-zone::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+}
+
+.upload-zone:hover::before {
+    opacity: 1;
+    animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.upload-zone:hover {
+    border-color: #00f2fe;
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(79, 172, 254, 0.2);
+}
+
+.upload-icon {
+    font-size: 5rem;
+    color: #4facfe;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.upload-zone:hover .upload-icon {
+    transform: scale(1.1);
+    color: #00f2fe;
+}
+
+.result-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: slideUp 0.6s ease forwards;
+}
+
+@keyframes slideUp {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.caption-display {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    text-align: center;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.caption-display::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-size: 4rem;
+    opacity: 0.3;
+}
+
+.caption-display::after {
+    content: '"';
+    position: absolute;
+    bottom: -30px;
+    right: 20px;
+    font-size: 4rem;
+    opacity: 0.3;
+}
+
+.prediction-item {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.prediction-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.confidence-meter {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.confidence-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.image-preview:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #4facfe;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 2rem auto;
+}
+
+.loading-text {
+    text-align: center;
+    color: #666;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+.error-alert {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin: 2rem 0;
+    text-align: center;
+    font-weight: 500;
+}
+
+.sample-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.sample-btn {
+    background: rgba(79, 172, 254, 0.1);
+    border: 2px solid #4facfe;
+    color: #4facfe;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.sample-btn:hover {
+    background: #4facfe;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-item {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+    font-size: 3.5rem;
+    color: #4facfe;
+    margin-bottom: 1.5rem;
+}
+
+.feature-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.feature-description {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .upload-zone {
+        padding: 2rem 1rem;
+    }
+    
+    .upload-icon {
+        font-size: 3rem;
+    }
+    
+    .sample-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .sample-btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+/* Animation utilities */
+.fade-in {
+    animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

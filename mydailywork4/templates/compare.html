@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Compare Recommendation Methods{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Compare Recommendation Methods</h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Select User</div>
+            <div class="card-body">
+                <select id="userSelect" class="form-select">
+                    <option value="">Choose a user...</option>
+                    {% for user in users %}
+                    <option value="{{ user }}">User {{ user }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Action</div>
+            <div class="card-body">
+                <button id="compareBtn" class="btn btn-primary w-100" disabled>
+                    Generate Recommendations
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="loadingSpinner" class="text-center d-none">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Generating recommendations...</p>
+</div>
+
+<div id="comparisonResults" class="row d-none">
+    <!-- Collaborative Filtering Results -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Collaborative Filtering</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text small">Recommendations based on similar users' preferences</p>
+                <div id="collaborativeResults">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content-Based Results -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Content-Based</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text small">Recommendations based on movie content similarity</p>
+                <div id="contentResults">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hybrid Results -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Hybrid Method</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text small">Combined approach for better accuracy</p>
+                <div id="hybridResults">
+                    <!-- Results will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Method Explanations -->
+<div class="row mt-4">
+    <div class="col-12">
+        <h3 class="mb-4">How Each Method Works</h3>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">Collaborative Filtering</div>
+            <div class="card-body">
+                <p class="card-text">
+                    Finds users with similar movie preferences and recommends movies they liked. 
+                    Uses cosine similarity to measure user similarity based on rating patterns.
+                </p>
+                <ul>
+                    <li>Good for discovering new genres</li>
+                    <li>Leverages community wisdom</li>
+                    <li>Cold start problem for new users</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">Content-Based</div>
+            <div class="card-body">
+                <p class="card-text">
+                    Analyzes movie features (genres, descriptions) using TF-IDF vectorization 
+                    and recommends similar content based on what you've already liked.
+                </p>
+                <ul>
+                    <li>Works well for new users</li>
+                    <li>Transparent recommendations</li>
+                    <li>Limited diversity</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">Hybrid Method</div>
+            <div class="card-body">
+                <p class="card-text">
+                    Combines both approaches with weighted scoring (70% collaborative, 30% content-based) 
+                    to provide more robust and diverse recommendations.
+                </p>
+                <ul>
+                    <li>Best of both worlds</li>
+                    <li>More accurate predictions</li>
+                    <li>Handles edge cases better</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userSelect = document.getElementById('userSelect');
+    const compareBtn = document.getElementById('compareBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const comparisonResults = document.getElementById('comparisonResults');
+
+    userSelect.addEventListener('change', function() {
+        compareBtn.disabled = !this.value;
+    });
+
+    compareBtn.addEventListener('click', async function() {
+        const userId = userSelect.value;
+        if (!userId) return;
+
+        // Show loading
+        loadingSpinner.classList.remove('d-none');
+        comparisonResults.classList.add('d-none');
+
+        try {
+            // Fetch all three types of recommendations
+            const [collaborative, content, hybrid] = await Promise.all([
+                fetch(`/api/recommendations/${userId}?type=collaborative`).then(r => r.json()),
+                fetch(`/api/recommendations/${userId}?type=content`).then(r => r.json()),
+                fetch(`/api/recommendations/${userId}?type=hybrid`).then(r => r.json())
+            ]);
+
+            // Populate results
+            populateResults('collaborativeResults', collaborative, 'predicted_rating');
+            populateResults('contentResults', content, 'similarity_score');
+            populateResults('hybridResults', hybrid, 'hybrid_score');
+
+            // Show results
+            loadingSpinner.classList.add('d-none');
+            comparisonResults.classList.remove('d-none');
+
+        } catch (error) {
+            console.error('Error fetching recommendations:', error);
+            loadingSpinner.classList.add('d-none');
+        }
+    });
+
+    function populateResults(containerId, recommendations, scoreKey) {
+        const container = document.getElementById(containerId);
+        
+        if (!recommendations || recommendations.length === 0 || recommendations.error) {
+            if (recommendations && recommendations.error) {
+                container.innerHTML = `<p class="text-danger">Error: ${recommendations.error}</p>`;
+            } else {
+                container.innerHTML = '<p class="text-muted">No recommendations available</p>';
+            }
+            return;
+        }
+
+        let html = '';
+        recommendations.forEach((rec, index) => {
+            let scoreDisplay = '';
+            if (scoreKey === 'predicted_rating') {
+                scoreDisplay = `${rec[scoreKey]}/5`;
+            } else if (scoreKey === 'similarity_score') {
+                scoreDisplay = `${(rec[scoreKey] * 100).toFixed(1)}%`;
+            } else {
+                scoreDisplay = rec[scoreKey];
+            }
+
+            html += `
+                <div class="recommendation-item mb-3 p-2 border">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1">${rec.title}</h6>
+                            <small class="text-muted">${rec.genres}</small>
+                        </div>
+                        <span class="badge bg-primary">${scoreDisplay}</span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+});
+</script>
+{% endblock %}

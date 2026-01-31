@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Home - CineAI Recommender{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="hero-section floating">
+            <h1 class="gradient-text">CineAI Recommender</h1>
+            <p>Discover your next favorite movie using cutting-edge AI recommendation algorithms</p>
+            <div class="mt-4">
+                <i class="fas fa-magic text-primary me-3"></i>
+                <i class="fas fa-brain text-info me-3"></i>
+                <i class="fas fa-robot text-success"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Users Section -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 interactive">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-users me-2 text-primary"></i>User Profiles
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">Explore personalized user profiles and get AI-powered recommendations</p>
+                <div class="row">
+                    {% for user in users %}
+                    <div class="col-6 mb-3">
+                        <a href="{{ url_for('user_profile', user_id=user) }}" class="btn btn-outline-primary w-100 pulse">
+                            <i class="fas fa-user me-2"></i>User {{ user }}
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movies Section -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 interactive">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-film me-2 text-success"></i>Movie Collection
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">Browse our curated movie collection and discover similar films</p>
+                <div class="movie-grid glass">
+                    {% for movie in movies %}
+                    <div class="movie-card mb-3">
+                        <a href="{{ url_for('movie_details', movie_id=movie.movie_id) }}" class="text-decoration-none">
+                            <div class="card movie-item">
+                                <div class="card-body p-3">
+                                    <h6 class="card-title mb-1">{{ movie.title }}</h6>
+                                    <small class="text-muted">{{ movie.genres }}</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <h2 class="text-center mb-5 gradient-text">AI Recommendation Methods</h2>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100 interactive">
+            <div class="card-header">
+                <i class="fas fa-users fa-3x mb-3" style="background: var(--info-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <h5>Collaborative Filtering</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Harness the wisdom of crowds to find movies loved by users with similar tastes</p>
+                <div class="mt-3">
+                    <span class="badge bg-info me-1">Community-Driven</span>
+                    <span class="badge bg-info">Smart Matching</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100 interactive">
+            <div class="card-header">
+                <i class="fas fa-tags fa-3x mb-3" style="background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <h5>Content-Based AI</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Advanced content analysis to discover movies with similar themes and features</p>
+                <div class="mt-3">
+                    <span class="badge bg-warning me-1">Deep Analysis</span>
+                    <span class="badge bg-warning">Pattern Recognition</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-center h-100 interactive">
+            <div class="card-header">
+                <i class="fas fa-magic fa-3x mb-3" style="background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <h5>Hybrid Intelligence</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Combines multiple AI approaches for the most accurate and diverse recommendations</p>
+                <div class="mt-3">
+                    <span class="badge bg-success me-1">Multi-Algorithm</span>
+                    <span class="badge bg-success">Best Results</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Rating Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card glass">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-star me-2" style="background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                    Quick Rating System
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">Rate movies to improve your personalized recommendations</p>
+                <form id="ratingForm">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-bold">Select User:</label>
+                            <select class="form-select" name="user_id" required>
+                                <option value="">Choose User...</option>
+                                {% for user in users %}
+                                <option value="{{ user }}">User {{ user }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Select Movie:</label>
+                            <select class="form-select" name="movie_id" required>
+                                <option value="">Choose Movie...</option>
+                                {% for movie in movies %}
+                                <option value="{{ movie.movie_id }}">{{ movie.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label fw-bold">Your Rating:</label>
+                            <select class="form-select" name="rating" required>
+                                <option value="">Rate Movie...</option>
+                                <option value="1">⭐ 1 Star</option>
+                                <option value="2">⭐⭐ 2 Stars</option>
+                                <option value="3">⭐⭐⭐ 3 Stars</option>
+                                <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                                <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-plus me-1"></i>Add Rating
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div id="ratingMessage" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card glass">
+            <div class="card-body text-center">
+                <div class="row">
+                    <div class="col-md-3">
+                        <h3 class="gradient-text">{{ movies|length }}</h3>
+                        <p class="text-muted">Movies Available</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="gradient-text">{{ users|length }}</h3>
+                        <p class="text-muted">Active Users</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="gradient-text">3</h3>
+                        <p class="text-muted">AI Algorithms</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h3 class="gradient-text">∞</h3>
+                        <p class="text-muted">Possibilities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

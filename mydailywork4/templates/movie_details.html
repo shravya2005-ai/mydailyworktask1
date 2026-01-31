@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} - Movie Details{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>{{ movie.title }}</h1>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Back to Home</a>
+        </div>
+    </div>
+</div>
+
+<!-- Movie Info -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">Movie Information</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ movie.title }}</h5>
+                <p class="card-text">{{ movie.description }}</p>
+                <div class="mb-3">
+                    <strong>Genres:</strong>
+                    {% for genre in movie.genres.split(',') %}
+                    <span class="badge bg-primary me-1">{{ genre.strip() }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">Rating</div>
+            <div class="card-body text-center">
+                <h3>{{ avg_rating }}</h3>
+                <p class="text-muted mb-0">Average Rating</p>
+                <small class="text-muted">{{ total_ratings }} ratings</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Similar Movies -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Similar Movies</h5>
+            </div>
+            <div class="card-body">
+                {% if similar_movies %}
+                <div class="row">
+                    {% for rec in similar_movies %}
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ rec.title }}</h6>
+                                <p class="card-text small text-muted">{{ rec.genres }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-success">
+                                        {{ (rec.similarity_score * 100)|round(1) }}% match
+                                    </small>
+                                    <a href="{{ url_for('movie_details', movie_id=rec.movie_id) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No similar movies found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

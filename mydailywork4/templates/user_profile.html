@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}User {{ profile.user_id }} Profile - CineAI{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="gradient-text">
+                <i class="fas fa-user-circle me-3"></i>
+                User {{ profile.user_id }} Profile
+            </h1>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- User Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center interactive glass">
+            <div class="card-body">
+                <i class="fas fa-star fa-3x mb-3" style="background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <h3 class="gradient-text">{{ profile.average_rating }}</h3>
+                <p class="text-muted mb-0">Average Rating</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center interactive glass">
+            <div class="card-body">
+                <i class="fas fa-film fa-3x mb-3" style="background: var(--info-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                <h3 class="gradient-text">{{ profile.total_ratings }}</h3>
+                <p class="text-muted mb-0">Movies Rated</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card interactive">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-heart me-2" style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                    Favorite Genres
+                </h6>
+            </div>
+            <div class="card-body">
+                {% for genre, count in profile.favorite_genres.items() %}
+                <span class="badge bg-primary me-2 mb-2">{{ genre }} ({{ count }})</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rated Movies -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card interactive">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-history me-2 text-primary"></i>Rating History
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for movie in profile.rated_movies %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card glass interactive">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="card-title mb-1">{{ movie.title }}</h6>
+                                        <small class="text-muted">{{ movie.genres }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="rating-stars">
+                                            {% for i in range(1, 6) %}
+                                                {% if i <= movie.rating %}
+                                                    <i class="fas fa-star" style="color: #ffd700;"></i>
+                                                {% else %}
+                                                    <i class="far fa-star text-muted"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <small class="text-muted">{{ movie.rating }}/5</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Recommendations -->
+<div class="row">
+    <div class="col-12 mb-4">
+        <h2 class="text-center gradient-text">AI-Powered Recommendations</h2>
+        <p class="text-center text-muted">Personalized suggestions based on advanced machine learning algorithms</p>
+    </div>
+    
+    <!-- Collaborative Filtering -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 interactive">
+            <div class="card-header" style="background: linear-gradient(135deg, rgba(74, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);">
+                <h5 class="mb-0">
+                    <i class="fas fa-users me-2" style="background: var(--success-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                    Collaborative AI
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text small text-muted mb-3">Based on users with similar movie preferences</p>
+                {% if collab_recs and collab_recs != "User not found" %}
+                    {% for rec in collab_recs %}
+                    <div class="recommendation-item mb-3">
+                        <h6 class="mb-1">{{ rec.title }}</h6>
+                        <small class="text-muted d-block mb-1">{{ rec.genres }}</small>
+                        <div class="d-flex align-items-center">
+                            <small class="badge bg-success">
+                                <i class="fas fa-chart-line me-1"></i>{{ rec.predicted_rating }}/5
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-robot fa-2x mb-2"></i>
+                        <p>No recommendations available</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Content-Based -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 interactive">
+            <div class="card-header" style="background: linear-gradient(135deg, rgba(67, 233, 123, 0.1) 0%, rgba(56, 249, 215, 0.1) 100%);">
+                <h5 class="mb-0">
+                    <i class="fas fa-brain me-2" style="background: var(--warning-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                    Content AI
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text small text-muted mb-3">Similar to your favorite movies using deep analysis</p>
+                {% if content_recs %}
+                    {% for rec in content_recs %}
+                    <div class="recommendation-item mb-3">
+                        <h6 class="mb-1">{{ rec.title }}</h6>
+                        <small class="text-muted d-block mb-1">{{ rec.genres }}</small>
+                        <div class="d-flex align-items-center">
+                            <small class="badge bg-warning">
+                                <i class="fas fa-percentage me-1"></i>{{ (rec.similarity_score * 100)|round(1) }}% match
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-search fa-2x mb-2"></i>
+                        <p>No recommendations available</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Hybrid -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 interactive">
+            <div class="card-header" style="background: linear-gradient(135deg, rgba(240, 147, 251, 0.1) 0%, rgba(245, 87, 108, 0.1) 100%);">
+                <h5 class="mb-0">
+                    <i class="fas fa-magic me-2" style="background: var(--secondary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                    Hybrid Intelligence
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text small text-muted mb-3">Best of all AI methods combined for optimal results</p>
+                {% if hybrid_recs and hybrid_recs != "User not found" %}
+                    {% for rec in hybrid_recs %}
+                    <div class="recommendation-item mb-3">
+                        <h6 class="mb-1">{{ rec.title }}</h6>
+                        <small class="text-muted d-block mb-1">{{ rec.genres }}</small>
+                        <div class="d-flex align-items-center">
+                            <small class="badge" style="background: var(--secondary-gradient); color: white;">
+                                <i class="fas fa-star me-1"></i>{{ rec.hybrid_score }}
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted">
+                        <i class="fas fa-cogs fa-2x mb-2"></i>
+                        <p>No recommendations available</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Insights -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card glass">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2 text-primary"></i>User Insights
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <h4 class="gradient-text">{{ profile.total_ratings }}</h4>
+                        <p class="text-muted">Total Reviews</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="gradient-text">{{ profile.favorite_genres|length }}</h4>
+                        <p class="text-muted">Favorite Genres</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="gradient-text">{{ profile.average_rating }}</h4>
+                        <p class="text-muted">Avg Rating</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
